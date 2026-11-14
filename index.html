@@ -1,0 +1,734 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ATB — главная страница</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geologica:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --purple-900:#24093f; --purple-700:#570a94; --purple-600:#6f0bbb; --purple-200:#d9bff1; --purple-100:#ebddf8; --purple-50:#f6effc;
+  --yellow:#f4c900; --ink:#1c1030; --muted:#5c5470; --line:#e6dff0; --bg:#fbf9fd; --footer-text:#c9b8e0;
+  --font:"Geologica",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  --header-h:5.3125rem;
+}
+*,*::before,*::after{box-sizing:border-box}
+html{scroll-behavior:smooth;font-size:16px}
+@media (min-width:1200px){html{font-size:clamp(13px,1.1111vw,40px)}}
+body{margin:0;background:var(--bg);color:var(--ink);font:400 1rem/1.55 var(--font);-webkit-font-smoothing:antialiased}
+h1,h2,h3,p,ul{margin:0}
+ul{padding:0;list-style:none}
+a{color:inherit;text-decoration:none}
+img{display:block;max-width:100%}
+button{font:inherit;color:inherit;cursor:pointer}
+:focus-visible{outline:0.1875rem solid var(--purple-600);outline-offset:0.1875rem;border-radius:0.25rem}
+.wrap{max-width:90rem;margin-inline:auto;padding-inline:5rem}
+
+/* кнопки и ссылки */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:0.5rem;padding:0.9rem 1.5rem;border-radius:0.875rem;border:0;font:400 1rem/1 var(--font);transition:background-color .15s,transform .15s}
+.btn:active{transform:scale(.97)}
+.btn--yellow{background:var(--yellow);color:var(--ink)}
+.btn--yellow:hover{background:#dfb700}
+.btn--white{background:#fff;color:var(--ink);font-weight:600;line-height:1.2rem}
+.btn--soft{background:#6f0bbb;color:#fff;font-weight:600;height:3rem;padding:0 1rem;line-height:1.2rem}
+.btn--soft:hover{background:#570a94}
+.link{display:inline-flex;align-items:center;gap:0.375rem;font-weight:600;color:var(--purple-600)}
+.link svg{width:1.125rem;height:1.125rem;transition:transform .15s}
+.link:hover svg{transform:translateX(0.1875rem)}
+.h2{font-size:2.125rem;line-height:2.55rem;font-weight:600;letter-spacing:-0.0319rem}
+
+/* шапка */
+.header{position:sticky;top:0;z-index:50;background:rgba(255,255,255,0);-webkit-backdrop-filter:blur(0);backdrop-filter:blur(0);transition:background-color .3s ease,-webkit-backdrop-filter .3s ease,backdrop-filter .3s ease}
+/* вверху страницы шапка прозрачная; при прокрутке (или открытом меню) появляются фон и размытие */
+.header.is-scrolled,.header:has(.menu__btn[aria-expanded="true"]),.header:has(.burger[aria-expanded="true"]){background:rgba(255,255,255,0.85);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px)}
+@media (prefers-reduced-motion:reduce){.header{transition:none}}
+.header__in{display:flex;align-items:center;gap:1.5rem;padding:1rem 2.5rem;min-height:var(--header-h)}
+.header__logo{flex:1 0 0}
+.logo{display:inline-flex;align-items:center;gap:0.625rem}
+.logo img{height:3rem;width:auto}
+.logo__text{font-size:0.75rem;line-height:0.8625rem;font-weight:600;letter-spacing:0.015rem;text-transform:uppercase;color:var(--purple-600);white-space:nowrap}
+.menu__list{display:flex;gap:0.5rem}
+.menu__btn{display:inline-flex;align-items:center;gap:0.375rem;background:none;border:0;border-radius:6.25rem;padding:1rem 1.5rem;font-weight:600;line-height:1.2rem;white-space:nowrap;transition:background-color .12s,color .12s}
+.menu__btn:hover{background:var(--purple-50)}
+.menu__btn[aria-expanded="true"]{background:var(--purple-900);color:#fff}
+.menu__chev{display:none;transition:transform .16s}
+.menu__item{position:static}
+/* панель раскрытого меню */
+.mega{position:absolute;left:0;right:0;top:100%;background:#fff;border-bottom:1px solid var(--line);box-shadow:0 1.25rem 2.5rem -1rem rgba(28,16,48,.22),0 1px 0.125rem rgba(28,16,48,.06);max-height:calc(100vh - var(--header-h));overflow-y:auto;visibility:hidden;opacity:0;transform:translateY(-0.375rem);pointer-events:none;transition:opacity .14s,transform .16s,visibility 0s linear .16s}
+.menu__btn[aria-expanded="true"]+.mega{visibility:visible;opacity:1;transform:none;pointer-events:auto;transition-delay:0s}
+.mega__in{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));padding:2.5rem 5rem 3.0625rem;max-width:90rem;margin-inline:auto}
+.mega__col{padding-inline:1.5rem;display:flex;flex-direction:column;gap:2rem}
+.mega__group h3{margin:0 0 0.5rem;font-size:1.25rem;line-height:1.1;font-weight:600;letter-spacing:-0.0125rem;color:var(--purple-600)}
+.mega__group li a{display:block;padding:0.75rem 0;line-height:1.1}
+.mega__group li a:hover{color:var(--purple-600)}
+.mega__promos{padding-inline:1.5rem;border-left:1px solid var(--line);display:flex;flex-direction:column;gap:2rem;align-self:start}
+.mega--about .mega__group h3{line-height:1.2}
+.mega--about .mega__in{padding-bottom:3rem}
+.mega__in--3{grid-template-columns:repeat(3,minmax(0,1fr))}
+.promo{display:flex;gap:1rem;align-items:flex-start}
+.promo img{flex:none;width:6rem;height:6rem;border-radius:1.5rem;object-fit:cover;background:var(--purple-50)}
+.promo div{display:flex;flex-direction:column;gap:0.375rem;align-items:flex-start;min-width:0}
+.promo h3{font-size:1.125rem;line-height:1.1;font-weight:600}
+.promo p{font-size:0.875rem;line-height:1.5;color:var(--muted)}
+.btn--promo{background:var(--purple-50);border:1px solid var(--purple-100);color:var(--purple-600);padding:0.75rem 1.5rem}
+.btn--promo:hover{background:var(--purple-100)}
+.actions{flex:1 0 0;display:flex;gap:0.5rem;align-items:center;justify-content:flex-end}
+.icon-btn{display:grid;place-items:center;width:3rem;height:3rem;border-radius:0.75rem;border:0;background:transparent;transition:background-color .15s}
+.icon-btn:hover{background:#ebddf8}
+.icon-btn img{width:1.25rem;height:1.25rem}
+.lang{display:inline-flex;align-items:center;height:3rem;border:0;background:transparent;transition:background-color .15s;border-radius:0.75rem;padding:0 1rem;font-size:0.8125rem;line-height:0.975rem;font-weight:600;letter-spacing:0.0325rem;text-transform:uppercase;color:var(--purple-600)}
+.lang:hover{background:#ebddf8}
+.burger{display:none}
+
+/* переключатель языка: список раскрывается на месте кнопки */
+.lang-wrap{position:relative;display:inline-block}
+.lang-wrap.is-open .lang{visibility:hidden}
+.lang__list{position:absolute;top:0;left:0;width:100%;margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:0.5rem;visibility:hidden;pointer-events:none;transition:visibility 0s linear .3s}
+.lang-wrap.is-open .lang__list{visibility:visible;pointer-events:auto;transition-delay:0s}
+.lang__opt{display:flex;align-items:center;width:100%;height:3rem;padding:0 1rem;border:0;border-radius:0.625rem;background:#fff;color:var(--purple-600);font:inherit;font-size:0.8125rem;line-height:0.975rem;font-weight:600;letter-spacing:0.0325rem;text-transform:uppercase;cursor:pointer;opacity:0;transform:translate3d(0,-0.75rem,0) scale(.92);transform-origin:50% 0;transition:opacity .15s ease,transform .22s cubic-bezier(.23,1,.32,1),background-color .15s}
+.lang__list li:first-child .lang__opt{opacity:1;transform:none}
+.lang-wrap.is-open .lang__opt{opacity:1;transform:none;transition:opacity .2s ease calc(var(--k,0) * .045s),transform .35s cubic-bezier(.23,1,.32,1) calc(var(--k,0) * .045s),background-color .15s}
+.lang__opt:hover{background:var(--purple-50)}
+.lang__opt[aria-current="true"]{background:var(--purple-100)}
+.lang__opt:focus-visible,.lang:focus-visible{outline:2px solid var(--purple-600);outline-offset:2px}
+.menu__lang{display:none}
+
+/* баннер */
+.banner{position:relative;height:100vh;height:100svh;min-height:30rem;margin-top:calc(var(--header-h) * -1);background:var(--purple-100);overflow:hidden}
+.banner__bg{position:absolute;inset:0;background:url(img/banner-1.jpg) center/cover no-repeat;transform:scale(var(--bs,1));transform-origin:50% 50%;will-change:transform;pointer-events:none}
+.banner__copy{position:absolute;transform:translateY(-50%);left:6.25rem;top:calc(50% - 8.85rem);width:26.8125rem;display:flex;flex-direction:column;gap:1rem;align-items:flex-start}
+.banner__title{font-size:3rem;line-height:1.1;font-weight:600;letter-spacing:-0.075rem}
+.banner__copy .btn{margin-top:0.5rem}
+.banner__arrows{position:absolute;left:50%;bottom:3.9375rem;transform:translateX(-50%);display:flex;gap:0.5rem}
+.arrow{display:grid;place-items:center;width:3rem;height:3rem;border-radius:62.4375rem;background:#fff;border:1px solid rgba(0,0,0,.12)}
+.arrow img{width:1.25rem;height:1.25rem}
+.arrow--next img{transform:scaleX(-1)}
+.banner__arrows .arrow{background:rgba(255,255,255,0.85);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);border:0}
+
+/* блоки-стопка */
+/* гармошка: карточки в обычном потоке, наложены на --ov (32 px при 1440, как в макете), залипают нативным position:sticky.
+   Отступы и сдвиг --c подобраны так, чтобы все карточки отпускались одновременно (нижние границы margin-box совпадают),
+   а видимый шаг между ними оставался постоянным. */
+.stack{padding:1.5rem 1.5rem 0}
+.stage{position:relative;padding-bottom:calc(var(--ov) + 3 * var(--step))}
+:root{--ov:2rem;--step:1.875rem;--bh-max:47.5rem;--cap:calc(100vh - var(--header-h) - 2.5rem - 3 * var(--step));--bh:max(28rem,min(var(--bh-max),var(--cap)));--par:5rem}
+.block{--c:calc(max(var(--i,0) - 1, 0) * var(--step));position:sticky;top:calc(var(--header-h) + 1rem + var(--i,0) * var(--step) - var(--c));z-index:calc(var(--i,0) + 1);margin-bottom:calc(-1 * var(--ov) - min(var(--i,0), 1) * var(--step));transform:translate3d(0,var(--c),0) scale(var(--s,1));transform-origin:50% 0;will-change:transform;height:var(--bh);border-radius:2.5rem 2.5rem 0 0;overflow:hidden;background-size:cover;background-position:center}
+.block:last-child{border-radius:2.5rem}
+.block__bg{position:absolute;left:0;right:0;top:calc(var(--par) * -1);height:calc(100% + var(--par));background-size:cover;background-position:top center;background-repeat:no-repeat;transform:translate3d(0,var(--py,var(--par)),0);will-change:transform;pointer-events:none}
+.block__title{position:absolute;left:6.25rem;top:3.3333rem;font-size:2.5rem;line-height:2.4rem;font-weight:600;letter-spacing:-0.0375rem;white-space:nowrap}
+.block__text{position:absolute;left:6.25rem;top:9.5rem;width:24.0625rem;display:flex;flex-direction:column;gap:1.5rem;align-items:flex-start}
+.block__cat{font-size:1.5rem;line-height:1;font-weight:600}
+.block__desc{margin-top:0.75rem;line-height:1.55rem;color:var(--muted)}
+.block--cards .block__bg{background-image:url(img/block-cards.jpg)}
+.block--cards{background-color:#4d2073;color:#fff}
+.block--cards .block__cat{color:var(--purple-200);line-height:1.4625rem}
+.block--cards .block__desc{color:#fff}
+.block--deposit .block__bg{background-image:url(img/block-deposit.jpg)}
+.block--deposit{background-color:#e5c6fa;}
+.block--mortgage .block__bg{background-image:url(img/block-mortgage.jpg)}
+.block--mortgage{background-color:#b2c2f5;}
+.block--payments .block__bg{background-image:url(img/block-payments.jpg)}
+.block--payments{background-color:#facd99;}
+
+/* atb360 */
+.app{padding:2.5rem 0;max-width:80rem}
+.app__card{position:relative;height:35.5rem;border-radius:1.5rem;overflow:hidden;background:#3a1561 url(img/app-card.jpg) center/cover no-repeat;color:#fff}
+.app__copy{position:absolute;left:5rem;top:50%;transform:translateY(-50%);width:27.75rem;height:25.625rem;display:flex;flex-direction:column;justify-content:space-between}
+.app__top{display:flex;flex-direction:column;gap:2.5rem}
+.eyebrow{font-size:0.8125rem;line-height:0.975rem;font-weight:600;letter-spacing:0.0325rem;text-transform:uppercase;color:var(--yellow)}
+.app__title{font-size:4rem;line-height:2.55rem;font-weight:600;letter-spacing:-0.06rem}
+.app__list{display:flex;flex-direction:column;gap:0.5rem}
+.app__list li{display:flex;gap:0.625rem;line-height:1.55rem}
+.app__list svg{flex:none;width:1.5rem;height:1.5rem;stroke:var(--yellow);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.stores{display:flex;gap:0.75rem}
+
+/* рядом и на связи */
+.near{padding-block:2.5rem}
+.near .h2{margin-bottom:2.5rem}
+.cards3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1.5rem}
+.card{height:22.5rem;padding:2.5rem;border-radius:1.5rem;background:#fff;display:flex;flex-direction:column;gap:1rem}
+.card h3{font-size:1.25rem;font-weight:600;line-height:normal}
+.card--help{background:#fdf1d8;justify-content:space-between;gap:0}
+.search{display:flex;align-items:center;gap:0.5rem;height:3rem;padding:0 0.875rem;border-radius:0.75rem;background:var(--bg);color:var(--muted)}
+.search input{flex:1;min-width:0;border:0;background:none;font:inherit;outline:0}
+.search img{width:1.25rem;height:1.25rem}
+.card__map{flex:1;min-height:0;border-radius:1rem;overflow:hidden}
+.card__map img{width:100%;height:100%;object-fit:cover}
+.rates{width:100%;border-collapse:collapse}
+.rates th,.rates td{padding:0.625rem 0;border-bottom:1px solid var(--line);font-weight:400}
+.rates th{font-size:0.8125rem;color:var(--muted)}
+.rates td:first-child{font-size:1.125rem}
+.rates th:last-child,.rates td:last-child{text-align:right}
+.rates th:first-child{text-align:left}
+.card--map{background:#f6effc}
+.card--rates{justify-content:space-between;gap:0}
+.help__top{display:flex;justify-content:space-between;align-items:flex-start}
+.help__label{font-size:0.875rem;color:var(--muted)}
+.help__num{font-size:5rem;font-weight:600;color:var(--purple-600);line-height:normal;display:block}
+.help__img{position:relative;flex:none;width:9.375rem;height:9.375rem;overflow:hidden}
+.help__img img{width:100%;height:100%;object-fit:cover}
+.help__links{display:flex;flex-direction:column;gap:0.75rem;align-items:flex-start}
+
+/* другие направления */
+.doors{padding-block:2.5rem}
+.doors .h2{margin-bottom:2.5rem}
+.cards2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1.5rem}
+.door{background:#fff;border-radius:1.5rem;overflow:hidden;display:flex;flex-direction:column}
+.door__text{padding:1.5rem;display:flex;flex-direction:column;gap:0.5rem;align-items:flex-start}
+.door__text h3{font-size:1.5rem;line-height:1.5188rem;font-weight:600;letter-spacing:-0.0075rem}
+.door__text p{font-size:0.875rem;line-height:1.3125rem;color:var(--muted)}
+.tags{display:flex;flex-wrap:wrap;gap:0.375rem;padding:0.25rem 0 0.5rem}
+.tags li{border:1px solid var(--purple-100);border-radius:62.4375rem;padding:0.75rem 1.5rem;font-size:0.8125rem;line-height:1.1781rem;color:var(--purple-700)}
+.door__photo{order:-1;height:18.75rem;background:var(--purple-50)}
+.door__photo{overflow:hidden}
+.door__photo img{width:100%;height:100%;object-fit:cover;transition:transform .5s cubic-bezier(.23,1,.32,1)}
+@media (hover:hover) and (pointer:fine){.door:hover .door__photo img{transform:scale(1.05)}}
+@media (prefers-reduced-motion:reduce){.door__photo img{transition:none}}
+
+/* новости */
+.news{padding-block:2.5rem}
+.news__head{display:flex;align-items:center;justify-content:space-between;margin-bottom:2.5rem}
+.news__ctrl{display:flex;gap:0.5rem;align-items:center}
+.news__ctrl .link{padding-right:0.75rem}
+.news__ctrl .arrow{border-color:var(--purple-200)}
+.news__ctrl .arrow[disabled]{opacity:.4;cursor:default}
+.news__list{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1.5rem;padding:0.5rem 0 1.5rem}
+.news__item{display:flex;flex-direction:column;gap:0.5rem;height:36.25rem;padding:0.75rem 0.75rem 1.25rem;background:#fff;border-radius:1.5rem}
+.news__img{height:26.3125rem;flex:none;border-radius:1rem;overflow:hidden;background:var(--purple-50)}
+.news__img img{width:100%;height:100%;object-fit:cover;transition:transform .5s cubic-bezier(.23,1,.32,1)}
+@media (hover:hover) and (pointer:fine){.news__item:hover .news__img img{transform:scale(1.05)}}
+@media (prefers-reduced-motion:reduce){.news__img img{transition:none}}
+.news__body{display:flex;flex-direction:column;gap:0.5rem;padding:0.5rem 0.5rem 0}
+.news__date{font-size:0.8125rem;line-height:1.1781rem;color:var(--muted)}
+.news__title{font-size:1.125rem;line-height:1.5188rem;font-weight:600;letter-spacing:-0.0056rem;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+
+/* подвал */
+.footer{background:var(--purple-900);color:#fff;padding:5rem;display:flex;flex-direction:column;gap:2.5rem}
+.footer__cols{display:flex;gap:4rem;align-items:flex-start}
+.footer .logo__text{color:var(--purple-200)}
+.footer__links{flex:1;min-width:0;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:1.5rem}
+.footer h4{margin:0 0 0.5rem;font-size:0.8125rem;line-height:0.975rem;font-weight:600;letter-spacing:0.0325rem;text-transform:uppercase;color:var(--footer-text)}
+.footer li a{display:block;padding:0.5rem 0;font-size:0.875rem;line-height:1.3125rem}
+.footer li a:hover{text-decoration:underline;text-underline-offset:0.25rem}
+.footer__bottom{display:flex;gap:4rem;align-items:flex-start}
+.footer__legal{flex:1;min-width:0;display:flex;flex-direction:column;gap:1.5rem}
+.footer__partners{display:flex;flex-wrap:wrap;align-items:center;gap:1rem 2.5rem;list-style:none;margin:0;padding:0}
+.footer__partners img{display:block;height:2.5rem;width:auto}
+.footer__text{display:flex;flex-direction:column;gap:0.375rem;font-size:0.75rem;line-height:1.2;color:var(--purple-200)}
+.footer__text p{margin:0}
+.footer__social{display:flex;gap:0.75rem;list-style:none;margin:0;padding:0;flex:none}
+.footer .footer__social a{display:flex;padding:0;align-items:center;justify-content:center;width:2.75rem;height:2.75rem;border-radius:50%;background:#3a1561;transition:background .2s}
+.footer .footer__social a:hover{background:var(--purple-700)}
+.footer__social img{display:block;width:1.25rem;height:1.25rem}
+
+/* планшет */
+@media (max-width:1199px){
+  .wrap{padding-inline:2rem}
+  .actions .btn--soft,.actions .lang{display:none}
+  .burger{display:grid}
+  .menu__lang{display:flex;gap:0.5rem;padding:1rem 0 0.5rem}
+  .menu__lang button{flex:1;height:3rem;border:0;border-radius:0.75rem;background:var(--purple-50);color:var(--purple-600);font:inherit;font-size:0.875rem;font-weight:600;letter-spacing:0.0325rem;text-transform:uppercase;cursor:pointer}
+  .menu__lang button[aria-current="true"]{background:var(--purple-100)}
+  .menu{display:none;position:absolute;left:0;right:0;top:100%;background:#fff;border-bottom:1px solid var(--line);max-height:calc(100vh - var(--header-h));overflow-y:auto;padding:0.5rem 1.5rem 1rem}
+  .menu.is-open{display:block}
+  .menu__list{flex-direction:column;gap:0}
+  .menu__item{border-bottom:1px solid var(--line)}
+  .menu__btn{width:100%;justify-content:space-between;border-radius:0;padding:1rem 0;font-size:1.125rem}
+  .menu__btn:hover,.menu__btn[aria-expanded="true"]{background:none;color:var(--ink)}
+  .menu__chev{display:block}
+  .menu__btn[aria-expanded="true"] .menu__chev{transform:rotate(180deg)}
+  .mega{position:static;display:none;visibility:visible;opacity:1;transform:none;pointer-events:auto;box-shadow:none;border:0;max-height:none;overflow:visible}
+  .menu__btn[aria-expanded="true"]+.mega{display:block}
+  .mega__in{display:block;padding:0 0 1rem}
+  .mega__col{padding:0;gap:1rem;margin-bottom:1rem}
+  .mega__promos{border:0;padding:0;gap:1.25rem}
+  .mega__group li a{padding:0.625rem 0}
+  .header__in{padding-inline:1.5rem}
+  .banner__copy{left:3rem}
+  .block__title,.block__text{left:3rem}
+  :root{--bh-max:40rem}
+  .app__copy{left:2.5rem}
+  .cards3{grid-template-columns:1fr 1fr}
+  .cards3 .card--help{grid-column:1/-1}
+  .news__list{grid-template-columns:1fr 1fr}
+  .footer{padding-inline:2rem}
+  .footer__cols{flex-direction:column;gap:2rem}
+  .footer__bottom{flex-direction:column;gap:2rem}
+}
+/* телефон */
+@media (max-width:719px){
+  :root{--header-h:4.5625rem}
+  .wrap{padding-inline:1rem}
+  .header__in{padding:0.75rem 1rem;gap:0.75rem}
+  .logo img{height:2.5rem}
+  .banner__bg{background-position:70% center}
+  .banner__copy{left:1rem;right:1rem;width:auto;top:6rem;transform:none}
+  .banner__title{font-size:2.125rem}
+  .banner__arrows{bottom:1.5rem}
+  .stack{padding:1rem 0.75rem 0}
+    :root{--step:1.5rem;--bh-max:32.5rem}
+  .block__title{left:1.5rem;top:2rem;font-size:1.875rem}
+  .block__text{left:1.5rem;right:1.5rem;top:5rem;width:auto}
+  .app{padding:1.5rem 0}
+  .app__card{height:auto;min-height:35rem;background-position:70% center}
+  .app__copy{position:static;transform:none;width:auto;height:auto;padding:2rem 1.5rem;gap:2rem}
+  .app__title{font-size:3rem;line-height:1}
+  .cards3,.cards2,.news__list{grid-template-columns:1fr}
+  .card{height:auto;min-height:20rem;padding:1.5rem}
+  .card__map{min-height:10rem}
+  .help__num{font-size:3.5rem}
+  .news__item{height:auto}
+  .news__img{height:auto;aspect-ratio:4/5}
+  .h2{font-size:1.625rem;line-height:1.2}
+  .news__ctrl .link{display:none}
+  .footer{padding:2.5rem 1rem 1.5rem}
+  .footer__links{grid-template-columns:1fr 1fr}
+  .footer__partners{gap:1rem 1.5rem}
+  .footer__partners img{height:2rem}
+}
+/* появление при прокрутке: из прозрачности со сдвигом вверх (включается скриптом, без него всё видно сразу) */
+.js [data-reveal]{opacity:0;transform:translate3d(0,1.5rem,0);transition:opacity .7s ease-out var(--d,0s),transform .8s cubic-bezier(.23,1,.32,1) var(--d,0s)}
+.js [data-reveal].is-in{opacity:1;transform:none}
+@media (prefers-reduced-motion:reduce){.js [data-reveal]{opacity:1;transform:none;transition:none}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}}
+</style>
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-arrow" viewBox="0 0 18 18"><path d="M3.5 9h11M10 4.5 14.5 9 10 13.5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24"><path d="m5 12.5 4.5 4.5L19 7.5"/></symbol>
+</svg>
+
+<header class="header">
+  <div class="header__in">
+    <a class="header__logo logo" href="#" aria-label="Azər Türk Bank — на главную"><img src="img/logo-symbol.png" alt=""><span class="logo__text">Азер-Тюрк<br>Банк</span></a>
+    <nav class="menu" id="menu" aria-label="Основное меню">
+  <ul class="menu__list">
+    <li class="menu__item"><button class="menu__btn" type="button" aria-expanded="false" aria-controls="mega-retail"><span>Частным клиентам</span><svg class="menu__chev" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></button>
+      <div class="mega" id="mega-retail"><div class="mega__in">
+        <div class="mega__col">
+          <div class="mega__group"><h3>Карты</h3><ul><li><a href="#">ATB Card</a></li><li><a href="#">ATB Card Premium</a></li><li><a href="#">ATB Junior</a></li><li><a href="#">Cashback</a></li><li><a href="#">Apple Pay</a></li><li><a href="#">Google Pay</a></li><li><a href="#">SMS-уведомление</a></li><li><a href="#">3D Secure</a></li><li><a href="#">Услуги по картам</a></li><li><a href="#">Лимиты на операции</a></li></ul></div>
+        </div>
+        <div class="mega__col">
+          <div class="mega__group"><h3>Кредиты</h3><ul><li><a href="#">Потребительский кредит</a></li><li><a href="#">ATB Card Credit</a></li><li><a href="#">Кредит под залог вклада</a></li><li><a href="#">Тарифы по кредитам</a></li></ul></div>
+          <div class="mega__group"><h3>Ипотека</h3><ul><li><a href="#">Ипотечный кредит</a></li><li><a href="#">Льготная ипотека</a></li><li><a href="#">Ипотека через MİDA</a></li></ul></div>
+          <div class="mega__group"><h3>Приложение</h3><ul><li><a href="#">atb360 — приложение банка</a></li></ul></div>
+        </div>
+        <div class="mega__col">
+          <div class="mega__group"><h3>Вклады и сейфы</h3><ul><li><a href="#">Вклад «Классический»</a></li><li><a href="#">Депозитные сейфы</a></li></ul></div>
+          <div class="mega__group"><h3>Платежи и сервисы</h3><ul><li><a href="#">Оплата кредита</a></li><li><a href="#">Пополнение карты</a></li><li><a href="#">Оплата депозитных ячеек</a></li><li><a href="#">Заказ справки</a></li><li><a href="#">Обмен валют</a></li><li><a href="#">Курсы валют</a></li><li><a href="#">Приём повреждённых купюр</a></li><li><a href="#">Банк Маркет</a></li><li><a href="#">Тарифы</a></li></ul></div>
+        </div>
+        <div class="mega__promos">
+          <article class="promo"><img src="img/menu-app.jpg" alt=""><div><h3>Приложение atb360</h3><p>Карта, платежи и кредит в одном приложении.</p><a class="btn btn--promo" href="#">Подробнее</a></div></article>
+          <article class="promo"><img src="img/menu-credit.jpg" alt=""><div><h3>Кредитный калькулятор</h3><p>Рассчитайте платёж по кредиту наличными.</p><a class="btn btn--promo" href="#">Рассчитать</a></div></article>
+          <article class="promo"><img src="img/menu-mortgage.jpg" alt=""><div><h3>Ипотечный калькулятор</h3><p>Рассчитайте платёж по ипотеке.</p><a class="btn btn--promo" href="#">Рассчитать</a></div></article>
+        </div>
+      </div></div>
+    </li>
+    <li class="menu__item"><button class="menu__btn" type="button" aria-expanded="false" aria-controls="mega-biz"><span>Бизнесу</span><svg class="menu__chev" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></button>
+      <div class="mega" id="mega-biz"><div class="mega__in">
+        <div class="mega__col">
+          <div class="mega__group"><h3>Счета</h3><ul><li><a href="#">Открыть счёт онлайн</a></li><li><a href="#">Расчётно-кассовое обслуживание</a></li><li><a href="#">Валютные операции</a></li><li><a href="#">Корреспондентские счета</a></li><li><a href="#">Бизнес-депозиты</a></li></ul></div>
+          <div class="mega__group"><h3>Карты</h3><ul><li><a href="#">Бизнес-карты</a></li><li><a href="#">Карта Sahibkar</a></li><li><a href="#">Зарплатные карты</a></li><li><a href="#">Услуги по картам</a></li><li><a href="#">SMS-уведомление</a></li></ul></div>
+        </div>
+        <div class="mega__col">
+          <div class="mega__group"><h3>Кредиты</h3><ul><li><a href="#">Кредиты для МСБ</a></li><li><a href="#">Кредиты для крупного бизнеса</a></li><li><a href="#">Зелёный бизнес</a></li><li><a href="#">Льготные кредиты с госгарантией</a></li><li><a href="#">Бизнес-кредитная линия</a></li><li><a href="#">Кредитная карта Sahibkar</a></li><li><a href="#">Факторинг</a></li><li><a href="#">Документарные операции</a></li></ul></div>
+          <div class="mega__group"><h3>Цифровые сервисы</h3><ul><li><a href="#">ATB Business (интернет-банкинг)</a></li><li><a href="#">ATB Business Mobile</a></li><li><a href="#">Онлайн-анкета</a></li></ul></div>
+        </div>
+        <div class="mega__col">
+          <div class="mega__group"><h3>Приём платежей</h3><ul><li><a href="#">e-POS</a></li><li><a href="#">e-commerce</a></li><li><a href="#">ATB POS</a></li><li><a href="#">Эквайринг и смарт-касса</a></li></ul></div>
+          <div class="mega__group"><h3>Сервисы</h3><ul><li><a href="#">Электронный документооборот</a></li><li><a href="#">Инкассация</a></li><li><a href="#">Терминалы ввода и вывода наличных</a></li><li><a href="#">Приём повреждённых купюр</a></li><li><a href="#">Финансовые услуги</a></li><li><a href="#">Тарифы для бизнеса</a></li></ul></div>
+        </div>
+        <div class="mega__promos">
+          <article class="promo"><img src="img/menu-business.jpg" alt=""><div><h3>ATB Business</h3><p>Интернет-банкинг для бизнеса.</p><a class="btn btn--promo" href="#">Войти</a></div></article>
+          <article class="promo"><img src="img/menu-form.jpg" alt=""><div><h3>Онлайн-анкета</h3><p>Откройте счёт онлайн.</p><a class="btn btn--promo" href="#">Открыть счёт</a></div></article>
+        </div>
+      </div></div>
+    </li>
+    <li class="menu__item"><button class="menu__btn" type="button" aria-expanded="false" aria-controls="mega-private"><span>ATB Private</span><svg class="menu__chev" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></button>
+      <div class="mega" id="mega-private"><div class="mega__in mega__in--3">
+        <div class="mega__col">
+          <div class="mega__group"><h3>Продукты</h3><ul><li><a href="#">Депозиты до 3 лет</a></li><li><a href="#">Премиальные карты</a></li><li><a href="#">Депозитные ячейки</a></li><li><a href="#">Текущие счета</a></li><li><a href="#">Кредиты и ипотека</a></li></ul></div>
+        </div>
+        <div class="mega__col">
+          <div class="mega__group"><h3>Сервис</h3><ul><li><a href="#">Персональный менеджер</a></li><li><a href="#">VIP-отделение</a></li><li><a href="#">Консьерж CIP</a></li><li><a href="#">Финансовое консультирование</a></li><li><a href="#">Колл-центр 24/7</a></li></ul></div>
+        </div>
+        <div class="mega__promos">
+          <article class="promo"><img src="img/menu-private.jpg" alt=""><div><h3>Стать клиентом</h3><p>Оставьте заявку, и менеджер свяжется с вами.</p><a class="btn btn--promo" href="#">Оставить заявку</a></div></article>
+        </div>
+      </div></div>
+    </li>
+    <li class="menu__item"><button class="menu__btn" type="button" aria-expanded="false" aria-controls="mega-about"><span>О банке</span><svg class="menu__chev" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></button>
+      <div class="mega mega--about" id="mega-about"><div class="mega__in">
+        <div class="mega__col">
+          <div class="mega__group"><h3>О банке</h3><ul><li><a href="#">О банке</a></li><li><a href="#">Миссия и стратегия</a></li><li><a href="#">Руководство</a></li><li><a href="#">Структура банка</a></li><li><a href="#">Акционеры</a></li><li><a href="#">Управление рисками</a></li><li><a href="#">Награды</a></li></ul></div>
+        </div>
+        <div class="mega__col">
+          <div class="mega__group"><h3>Информация</h3><ul><li><a href="#">Финансовая информация</a></li><li><a href="#">Годовые отчёты</a></li><li><a href="#">Новости</a></li><li><a href="#">Медиа-материалы</a></li><li><a href="#">Безопасность</a></li><li><a href="#">Тарифы</a></li><li><a href="#">Благотворительность</a></li><li><a href="#">Карьера</a></li></ul></div>
+        </div>
+        <div class="mega__col">
+          <div class="mega__group"><h3>Связь с банком</h3><ul><li><a href="#">Отделения и банкоматы</a></li><li><a href="#">Справочный центр</a></li><li><a href="#">Колл-центр для частных клиентов</a></li><li><a href="#">Колл-центр для бизнеса</a></li><li><a href="#">Жалобы и предложения</a></li><li><a href="#">Онлайн-опрос</a></li><li><a href="#">Прямая связь с председателем</a></li></ul></div>
+        </div>
+        <div class="mega__col">
+          <div class="mega__group"><h3>Документы и правила</h3><ul><li><a href="#">Общий свод правил</a></li><li><a href="#">Общая информация</a></li><li><a href="#">Политика вознаграждения</a></li><li><a href="#">Апелляционный совет</a></li><li><a href="#">Борьба с коррупцией</a></li><li><a href="#">Реквизиты</a></li></ul></div>
+        </div>
+      </div></div>
+    </li>
+  </ul>
+  <div class="menu__lang" role="group" aria-label="Язык"><button type="button" data-lang="en" lang="en">EN</button><button type="button" data-lang="az" lang="az">AZ</button><button type="button" data-lang="ru" lang="ru">РУ</button></div>
+</nav>
+    <div class="actions">
+      <button class="icon-btn" type="button" aria-label="Поиск по сайту"><img src="img/icon-search.png" alt=""></button>
+      <a class="btn btn--soft" href="#">Войти в atb360</a>
+      <div class="lang-wrap" id="langwrap"><button class="lang" type="button" aria-label="Язык" aria-haspopup="true" aria-expanded="false" aria-controls="langlist"><span class="lang__cur">РУ</span></button><ul class="lang__list" id="langlist"><li><button class="lang__opt" type="button" data-lang="en" lang="en">EN</button></li><li><button class="lang__opt" type="button" data-lang="az" lang="az">AZ</button></li><li><button class="lang__opt" type="button" data-lang="ru" lang="ru">РУ</button></li></ul></div>
+      <button class="icon-btn burger" type="button" aria-label="Меню"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
+    </div>
+  </div>
+</header>
+
+<main>
+  <section class="banner" aria-roledescription="carousel" aria-label="Главные события банка">
+    <div class="banner__bg" aria-hidden="true"></div>
+    <div class="banner__copy">
+      <h1 class="banner__title">Семейный банкинг в atb360</h1>
+      <a class="btn btn--yellow" href="#">Узнать больше</a>
+    </div>
+    <div class="banner__arrows">
+      <button class="arrow" type="button" aria-label="Предыдущий баннер"><img src="img/icon-arrow-left.png" alt=""></button>
+      <button class="arrow arrow--next" type="button" aria-label="Следующий баннер"><img src="img/icon-arrow-left.png" alt=""></button>
+    </div>
+  </section>
+
+  <section class="stack" id="fold" aria-label="Что вы хотите сделать">
+    <div class="stage">
+    <article class="block block--cards" style="--i:0">
+      <span class="block__bg" aria-hidden="true"></span>
+      <h2 class="block__title">Оформить карту</h2>
+      <div class="block__text">
+        <div><p class="block__cat">Карты</p><p class="block__desc">ATB Card — бесплатная дебетовая карта. Цифровую можно получить в приложении.</p></div>
+        <a class="btn btn--yellow" href="#">Выбрать карту</a>
+      </div>
+    </article>
+    <article class="block block--deposit" style="--i:1">
+      <span class="block__bg" aria-hidden="true"></span>
+      <h2 class="block__title">Открыть вклад</h2>
+      <div class="block__text">
+        <div><p class="block__cat">Вклады</p><p class="block__desc">Вклад «Классический»: проценты ежемесячно или в конце срока.</p></div>
+        <a class="btn btn--yellow" href="#">Рассчитать вклад</a>
+      </div>
+    </article>
+    <article class="block block--mortgage" style="--i:2">
+      <span class="block__bg" aria-hidden="true"></span>
+      <h2 class="block__title">Купить жильё</h2>
+      <div class="block__text">
+        <div><p class="block__cat">Ипотека</p><p class="block__desc">Ипотечный кредит, в том числе льготная ипотека.</p></div>
+        <a class="btn btn--yellow" href="#">Узнать об ипотеке</a>
+      </div>
+    </article>
+    <article class="block block--payments" style="--i:3">
+      <span class="block__bg" aria-hidden="true"></span>
+      <h2 class="block__title">Заплатить</h2>
+      <div class="block__text">
+        <div><p class="block__cat">Платежи</p><p class="block__desc">Оплата кредита, пополнение карты и коммунальные платежи.</p></div>
+        <a class="btn btn--yellow" href="#">Перейти к оплате</a>
+      </div>
+    </article>
+    </div>
+  </section>
+
+  <section class="app wrap" aria-labelledby="app-title">
+    <div class="app__card">
+      <div class="app__copy">
+        <div class="app__top">
+          <p class="eyebrow">Банк в вашем телефоне</p>
+          <h2 class="app__title" id="app-title">atb360</h2>
+          <ul class="app__list">
+            <li><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-check"/></svg>Заявку на кредит можно подать онлайн и получить предложение без ожидания.</li>
+            <li><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-check"/></svg>Цифровая карта сразу после регистрации</li>
+            <li><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-check"/></svg>Платежи и переводы в несколько касаний</li>
+            <li><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-check"/></svg>Вход по Face ID или Touch ID</li>
+          </ul>
+        </div>
+        <div class="stores">
+          <a class="btn btn--white" href="#">App Store</a>
+          <a class="btn btn--white" href="#">Google Play</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="near wrap" id="nearby" aria-labelledby="near-title">
+    <h2 class="h2" id="near-title">Рядом и на связи</h2>
+    <div class="cards3">
+      <div class="card card--map">
+        <h3>Отделения и банкоматы</h3>
+        <form class="search" role="search" onsubmit="return false">
+          <label class="sr-only" for="where" style="position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%)">Район или адрес</label>
+          <input id="where" type="search" placeholder="Район или адрес">
+          <img src="img/icon-search.png" alt="">
+        </form>
+        <div class="card__map"><img src="img/atm.jpg" alt="Банкомат ATB"></div>
+        <a class="link" href="#">Все отделения и банкоматы <svg aria-hidden="true"><use href="#i-arrow"/></svg></a>
+      </div>
+
+      <div class="card card--rates">
+        <div>
+          <h3 style="margin-bottom:1rem">Курсы валют</h3>
+          <table class="rates">
+            <thead><tr><th scope="col">Единица валюты</th><th scope="col">Курс, AZN</th></tr></thead>
+            <tbody>
+              <tr><td>USD</td><td>1,7000</td></tr>
+              <tr><td>EUR</td><td>1,8805</td></tr>
+              <tr><td>RUB</td><td>0,0205</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <a class="link" href="#">Курсы и валютный калькулятор <svg aria-hidden="true"><use href="#i-arrow"/></svg></a>
+      </div>
+
+      <div class="card card--help" id="help">
+        <div class="help__top">
+          <div>
+            <h3 style="margin-bottom:1rem">Нужна помощь?</h3>
+            <p class="help__label">Колл-центр</p>
+            <a class="help__num" href="tel:945">945</a>
+          </div>
+          <div class="help__img"><img src="img/mascot.jpg" alt=""></div>
+        </div>
+        <div class="help__links">
+          <a class="link" href="#">Написать в WhatsApp <svg aria-hidden="true"><use href="#i-arrow"/></svg></a>
+          <a class="link" href="#">Справочный центр <svg aria-hidden="true"><use href="#i-arrow"/></svg></a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="doors wrap" aria-labelledby="doors-title">
+    <h2 class="h2" id="doors-title">Другие направления</h2>
+    <div class="cards2">
+      <article class="door">
+        <div class="door__text">
+          <h3>Для бизнеса</h3>
+          <p>Счета, приём платежей и кредиты для МСБ и крупного бизнеса.</p>
+          <ul class="tags"><li>Счёт онлайн</li><li>e-POS</li><li>ATB Business</li></ul>
+          <a class="link" href="#">Перейти к разделу для бизнеса <svg aria-hidden="true"><use href="#i-arrow"/></svg></a>
+        </div>
+        <div class="door__photo"><img src="img/business.jpg" alt=""></div>
+      </article>
+      <article class="door">
+        <div class="door__text">
+          <h3>ATB Private</h3>
+          <p>Персональный менеджер, премиальные карты и обслуживание без очередей.</p>
+          <ul class="tags"><li>Персональный менеджер</li><li>Visa Infinite</li><li>Сейфовые ячейки</li></ul>
+          <a class="link" href="#">Узнать об ATB Private <svg aria-hidden="true"><use href="#i-arrow"/></svg></a>
+        </div>
+        <div class="door__photo"><img src="img/private.jpg" alt=""></div>
+      </article>
+    </div>
+  </section>
+
+  <section class="news wrap" aria-labelledby="news-title">
+    <div class="news__head">
+      <h2 class="h2" id="news-title">Новости</h2>
+      <div class="news__ctrl">
+        <a class="link" href="#">Все новости</a>
+        <button class="arrow" type="button" disabled aria-label="Более новые новости"><img src="img/icon-arrow-left.png" alt=""></button>
+        <button class="arrow arrow--next" type="button" aria-label="Более старые новости"><img src="img/icon-arrow-left.png" alt=""></button>
+      </div>
+    </div>
+    <ul class="news__list">
+      <li><a class="news__item" href="#">
+        <div class="news__img"><img src="img/news-1.jpg" alt=""></div>
+        <div class="news__body"><time class="news__date" datetime="2026-10-30">30.10.2026</time><h3 class="news__title">Azer Turk Bank обновил приложение atb360: семейный банкинг и новые цифровые возможности</h3></div>
+      </a></li>
+      <li><a class="news__item" href="#">
+        <div class="news__img"><img src="img/news-2.jpg" alt=""></div>
+        <div class="news__body"><time class="news__date" datetime="2026-10-23">23.10.2026</time><h3 class="news__title">Руководство ATB почтило память шехида Рауфа Алиева</h3></div>
+      </a></li>
+      <li><a class="news__item" href="#">
+        <div class="news__img"><img src="img/news-3.jpg" alt=""></div>
+        <div class="news__body"><time class="news__date" datetime="2026-10-15">15.10.2026</time><h3 class="news__title">Чистая прибыль ATB выросла на 62%</h3></div>
+      </a></li>
+    </ul>
+  </section>
+</main>
+
+<footer class="footer">
+  <div class="footer__cols">
+    <a class="footer__logo logo" href="#" aria-label="Azər Türk Bank — на главную"><img src="img/logo-symbol.png" alt=""><span class="logo__text">Азер-Тюрк<br>Банк</span></a>
+    <div class="footer__links">
+      <div><h4>Частным клиентам</h4><ul><li><a href="#">Кредиты</a></li><li><a href="#">Карты</a></li><li><a href="#">Вклады</a></li><li><a href="#">Ипотека</a></li><li><a href="#">Платежи</a></li></ul></div>
+      <div><h4>Бизнесу</h4><ul><li><a href="#">Счета</a></li><li><a href="#">Кредиты</a></li><li><a href="#">Приём платежей</a></li><li><a href="#">ATB Business</a></li><li><a href="#">Тарифы для бизнеса</a></li></ul></div>
+      <div><h4>О банке</h4><ul><li><a href="#">О банке</a></li><li><a href="#">Новости</a></li><li><a href="#">Безопасность</a></li><li><a href="#">Тарифы</a></li><li><a href="#">Карьера</a></li></ul></div>
+      <div><h4>Контакты</h4><ul><li><a href="tel:945">945</a></li><li><a href="#">WhatsApp</a></li><li><a href="mailto:atb@atb.az">atb@atb.az</a></li><li><a href="#">Баку, ул. Дж. Мамедкулизаде, 85; 192/193</a></li></ul></div>
+    </div>
+  </div>
+  <div class="footer__bottom">
+    <div class="footer__legal">
+      <ul class="footer__partners">
+        <li><img src="img/partner-adif.png" alt="ADIF"></li>
+        <li><img src="img/partner-infobank.png" alt="infobank.az"></li>
+        <li><img src="img/partner-cbar.png" alt="Центральный банк Азербайджанской Республики"></li>
+        <li><img src="img/partner-aih.png" alt="Азербайджанский инвестиционный холдинг"></li>
+      </ul>
+      <div class="footer__text">
+        <p>© 2002 — 2026 Azər Türk Bank. Все права защищены.</p>
+        <p>ОАО «Азер-Тюрк Банк» осуществляет свою деятельность на основании лицензии № 234, выданной Центральным Банком Азербайджанской Республики от 29.06.1995 года. Копирование содержимого сайта строго запрещено</p>
+      </div>
+    </div>
+    <ul class="footer__social" aria-label="Социальные сети">
+      <li><a href="#" aria-label="Facebook"><img src="img/social-facebook.png" alt=""></a></li>
+      <li><a href="#" aria-label="Instagram"><img src="img/social-instagram.png" alt=""></a></li>
+      <li><a href="#" aria-label="LinkedIn"><img src="img/social-linkedin.png" alt=""></a></li>
+      <li><a href="#" aria-label="TikTok"><img src="img/social-tiktok.png" alt=""></a></li>
+    </ul>
+  </div>
+</footer>
+
+<script>
+(function(){
+  var btns=[].slice.call(document.querySelectorAll('.menu__btn')),menu=document.getElementById('menu'),burger=document.querySelector('.burger');
+  function closeAll(){btns.forEach(function(b){b.setAttribute('aria-expanded','false')})}
+  btns.forEach(function(b){b.addEventListener('click',function(e){
+    e.stopPropagation();var open=b.getAttribute('aria-expanded')==='true';closeAll();b.setAttribute('aria-expanded',String(!open));
+  })});
+  burger.addEventListener('click',function(e){e.stopPropagation();var o=menu.classList.toggle('is-open');burger.setAttribute('aria-expanded',String(o));if(!o)closeAll()});
+  document.addEventListener('click',function(e){if(!e.target.closest('.header'))closeAll()});
+  document.addEventListener('keydown',function(e){if(e.key==='Escape'){closeAll();menu.classList.remove('is-open');burger.setAttribute('aria-expanded','false')}});
+})();
+</script>
+<script>
+/* Гармошка: залипание делает CSS (position:sticky). Скрипт только добавляет
+   - лесенку: каждая легшая сверху карточка сжимает все предыдущие на 5% по ширине (от верхнего края);
+   - параллакс фона: картинка отстаёт от блока и встаёт верхом на верх блока, когда он лёг. */
+(function(){
+  var stack=document.getElementById('fold'); if(!stack) return;
+  var blocks=[].slice.call(stack.querySelectorAll('.block')), header=document.querySelector('.header');
+  if(window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  var ticking=false, shrink=0.05, n=blocks.length;
+  function px(v,rem){v=(v||'').trim();return parseFloat(v)*(v.indexOf('rem')>-1?rem:1)}
+  function clamp(v){return Math.max(0,Math.min(1,v))}
+  function update(){
+    ticking=false;
+    var rem=parseFloat(getComputedStyle(document.documentElement).fontSize), cs=getComputedStyle(blocks[0]),
+        step=px(cs.getPropertyValue('--step'),rem), par=px(cs.getPropertyValue('--par'),rem),
+        vh=window.innerHeight, base=header.offsetHeight+rem, q=[], i, j;
+    for(i=0;i<n;i++){                                     /* сначала всё читаем, потом пишем */
+      var top=blocks[i].getBoundingClientRect().top, T=base+i*step;
+      q[i]=clamp((vh-top)/(vh-T));                         /* 0 — карточка только показалась снизу, 1 — легла на свою линию */
+    }
+    for(i=0;i<n;i++){
+      var sc=1; for(j=i+1;j<n;j++){sc-=shrink*q[j]}
+      blocks[i].style.setProperty('--s',sc.toFixed(4));
+      blocks[i].style.setProperty('--py',(par*q[i]).toFixed(1)+'px');
+    }
+  }
+  function req(){if(!ticking){ticking=true;requestAnimationFrame(update)}}
+  addEventListener('scroll',req,{passive:true}); addEventListener('resize',req); update();
+})();
+</script>
+<script>
+/* Появление блоков при прокрутке: atb360, «Рядом и на связи», «Другие направления», «Новости» */
+(function(){
+  if(!('IntersectionObserver' in window) || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  var groups=[
+    ['.app__card'],
+    ['.near > .h2','.near .card'],
+    ['.doors > .h2','.doors .door'],
+    ['.news__head','.news__list > li']
+  ], els=[];
+  groups.forEach(function(g){
+    var k=0;
+    g.forEach(function(sel){
+      [].slice.call(document.querySelectorAll(sel)).forEach(function(el){
+        el.setAttribute('data-reveal','');
+        el.style.setProperty('--d',(k*0.08).toFixed(2)+'s'); k++; els.push(el);
+      });
+    });
+  });
+  document.documentElement.classList.add('js');
+  var io=new IntersectionObserver(function(items){
+    items.forEach(function(it){if(it.isIntersecting){it.target.classList.add('is-in');io.unobserve(it.target)}});
+  },{threshold:0.12,rootMargin:'0px 0px -6% 0px'});
+  els.forEach(function(el){io.observe(el)});
+})();
+</script>
+<script>
+/* Баннер: при прокрутке фоновое фото плавно увеличивается (до +25% к моменту, когда баннер прокручен целиком) */
+(function(){
+  var bg=document.querySelector('.banner__bg'), banner=document.querySelector('.banner');
+  if(!bg||window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  var ticking=false, GROW=0.25;
+  function update(){
+    ticking=false;
+    var p=Math.min(1,Math.max(0,window.pageYOffset/Math.max(1,banner.offsetHeight)));
+    bg.style.setProperty('--bs',(1+GROW*p).toFixed(4));
+  }
+  function req(){if(!ticking){ticking=true;requestAnimationFrame(update)}}
+  addEventListener('scroll',req,{passive:true}); addEventListener('resize',req); update();
+})();
+</script>
+<script>
+/* Шапка: вверху страницы прозрачная, при прокрутке появляются фон и размытие */
+(function(){
+  var hd=document.querySelector('.header'); if(!hd) return;
+  function on(){hd.classList.toggle('is-scrolled',window.pageYOffset>8)}
+  addEventListener('scroll',on,{passive:true}); on();
+})();
+</script>
+<script>
+/* Язык сайта: EN / AZ / РУ. Исходный текст в разметке русский; переводы подставляются по словарю, выбор запоминается. */
+(function(){
+  var D={"ATB — главная страница": ["ATB — homepage", "ATB — ana səhifə"], "Azər Türk Bank — на главную": ["Azər Türk Bank — home", "Azər Türk Bank — ana səhifə"], "Азер-Тюрк": ["Azer Turk", "Azər Türk"], "Банк": ["Bank", "Bank"], "Основное меню": ["Main menu", "Əsas menyu"], "Частным клиентам": ["Personal", "Fərdi müştərilər"], "Бизнесу": ["Business", "Biznes"], "О банке": ["About the bank", "Bank haqqında"], "Карты": ["Cards", "Kartlar"], "SMS-уведомление": ["SMS notifications", "SMS bildiriş"], "Услуги по картам": ["Card services", "Kart xidmətləri"], "Лимиты на операции": ["Transaction limits", "Əməliyyat limitləri"], "Кредиты": ["Loans", "Kreditlər"], "Потребительский кредит": ["Consumer loan", "İstehlak krediti"], "Кредит под залог вклада": ["Loan secured by a deposit", "Əmanət girovu ilə kredit"], "Тарифы по кредитам": ["Loan tariffs", "Kredit tarifləri"], "Ипотека": ["Mortgage", "İpoteka"], "Ипотечный кредит": ["Mortgage loan", "İpoteka krediti"], "Льготная ипотека": ["Preferential mortgage", "Güzəştli ipoteka"], "Ипотека через MİDA": ["Mortgage via MİDA", "MİDA vasitəsilə ipoteka"], "Приложение": ["App", "Tətbiq"], "atb360 — приложение банка": ["atb360 — the bank's app", "atb360 — bankın tətbiqi"], "Вклады и сейфы": ["Deposits and safes", "Əmanətlər və seyflər"], "Вклад «Классический»": ["“Classic” deposit", "“Klassik” əmanət"], "Депозитные сейфы": ["Safe deposit boxes", "Depozit seyfləri"], "Платежи и сервисы": ["Payments and services", "Ödənişlər və xidmətlər"], "Оплата кредита": ["Loan payment", "Kreditin ödənilməsi"], "Пополнение карты": ["Card top-up", "Kartın artırılması"], "Оплата депозитных ячеек": ["Safe deposit box payment", "Seyf xanalarının ödənişi"], "Заказ справки": ["Order a certificate", "Arayış sifarişi"], "Обмен валют": ["Currency exchange", "Valyuta mübadiləsi"], "Курсы валют": ["Exchange rates", "Valyuta məzənnələri"], "Приём повреждённых купюр": ["Damaged banknotes", "Zədələnmiş əskinasların qəbulu"], "Банк Маркет": ["Bank Market", "Bank Market"], "Тарифы": ["Tariffs", "Tariflər"], "Приложение atb360": ["atb360 app", "atb360 tətbiqi"], "Карта, платежи и кредит в одном приложении.": ["Card, payments and loans in one app.", "Kart, ödənişlər və kredit bir tətbiqdə."], "Подробнее": ["Learn more", "Ətraflı"], "Кредитный калькулятор": ["Loan calculator", "Kredit kalkulyatoru"], "Рассчитайте платёж по кредиту наличными.": ["Calculate your cash loan payment.", "Nağd kredit üzrə ödənişi hesablayın."], "Рассчитать": ["Calculate", "Hesabla"], "Ипотечный калькулятор": ["Mortgage calculator", "İpoteka kalkulyatoru"], "Рассчитайте платёж по ипотеке.": ["Calculate your mortgage payment.", "İpoteka üzrə ödənişi hesablayın."], "Счета": ["Accounts", "Hesablar"], "Открыть счёт онлайн": ["Open an account online", "Onlayn hesab açın"], "Расчётно-кассовое обслуживание": ["Settlement and cash services", "Hesablaşma-kassa xidməti"], "Валютные операции": ["Foreign exchange operations", "Valyuta əməliyyatları"], "Корреспондентские счета": ["Correspondent accounts", "Müxbir hesabları"], "Бизнес-депозиты": ["Business deposits", "Biznes depozitləri"], "Бизнес-карты": ["Business cards", "Biznes kartları"], "Карта Sahibkar": ["Sahibkar card", "Sahibkar kartı"], "Зарплатные карты": ["Payroll cards", "Əməkhaqqı kartları"], "Кредиты для МСБ": ["SME loans", "KOB üçün kreditlər"], "Кредиты для крупного бизнеса": ["Loans for large business", "İri biznes üçün kreditlər"], "Зелёный бизнес": ["Green business", "Yaşıl biznes"], "Льготные кредиты с госгарантией": ["Preferential loans with a state guarantee", "Dövlət zəmanətli güzəştli kreditlər"], "Бизнес-кредитная линия": ["Business credit line", "Biznes kredit xətti"], "Кредитная карта Sahibkar": ["Sahibkar credit card", "Sahibkar kredit kartı"], "Факторинг": ["Factoring", "Faktorinq"], "Документарные операции": ["Documentary operations", "Sənədli əməliyyatlar"], "Цифровые сервисы": ["Digital services", "Rəqəmsal xidmətlər"], "ATB Business (интернет-банкинг)": ["ATB Business (internet banking)", "ATB Business (internet bankçılıq)"], "Онлайн-анкета": ["Online application", "Onlayn anket"], "Приём платежей": ["Accepting payments", "Ödənişlərin qəbulu"], "Эквайринг и смарт-касса": ["Acquiring and smart cash register", "Ekvayrinq və smart kassa"], "Сервисы": ["Services", "Xidmətlər"], "Электронный документооборот": ["Electronic document management", "Elektron sənəd dövriyyəsi"], "Инкассация": ["Cash collection", "İnkassasiya"], "Терминалы ввода и вывода наличных": ["Cash-in and cash-out terminals", "Nağd mədaxil və məxaric terminalları"], "Финансовые услуги": ["Financial services", "Maliyyə xidmətləri"], "Тарифы для бизнеса": ["Business tariffs", "Biznes tarifləri"], "Интернет-банкинг для бизнеса.": ["Internet banking for business.", "Biznes üçün internet bankçılıq."], "Войти": ["Sign in", "Daxil ol"], "Откройте счёт онлайн.": ["Open an account online.", "Hesabı onlayn açın."], "Открыть счёт": ["Open an account", "Hesab aç"], "Продукты": ["Products", "Məhsullar"], "Депозиты до 3 лет": ["Deposits up to 3 years", "3 ilə qədər əmanətlər"], "Премиальные карты": ["Premium cards", "Premium kartlar"], "Депозитные ячейки": ["Safe deposit boxes", "Seyf xanaları"], "Текущие счета": ["Current accounts", "Cari hesablar"], "Кредиты и ипотека": ["Loans and mortgages", "Kreditlər və ipoteka"], "Сервис": ["Service", "Xidmət"], "Персональный менеджер": ["Personal manager", "Fərdi menecer"], "VIP-отделение": ["VIP branch", "VIP filial"], "Консьерж CIP": ["CIP concierge", "CIP konsyerj"], "Финансовое консультирование": ["Financial advisory", "Maliyyə məsləhəti"], "Колл-центр 24/7": ["Call center 24/7", "Çağrı mərkəzi 24/7"], "Стать клиентом": ["Become a client", "Müştəri olun"], "Оставьте заявку, и менеджер свяжется с вами.": ["Submit a request and a manager will contact you.", "Müraciət buraxın, menecer sizinlə əlaqə saxlayacaq."], "Оставить заявку": ["Submit a request", "Müraciət et"], "Миссия и стратегия": ["Mission and strategy", "Missiya və strategiya"], "Руководство": ["Management", "Rəhbərlik"], "Структура банка": ["Bank structure", "Bankın strukturu"], "Акционеры": ["Shareholders", "Səhmdarlar"], "Управление рисками": ["Risk management", "Risklərin idarə edilməsi"], "Награды": ["Awards", "Mükafatlar"], "Информация": ["Information", "Məlumat"], "Финансовая информация": ["Financial information", "Maliyyə məlumatları"], "Годовые отчёты": ["Annual reports", "İllik hesabatlar"], "Новости": ["News", "Xəbərlər"], "Медиа-материалы": ["Media materials", "Media materialları"], "Безопасность": ["Security", "Təhlükəsizlik"], "Благотворительность": ["Charity", "Xeyriyyəçilik"], "Карьера": ["Careers", "Karyera"], "Связь с банком": ["Contact the bank", "Bankla əlaqə"], "Отделения и банкоматы": ["Branches and ATMs", "Filiallar və bankomatlar"], "Справочный центр": ["Help center", "Yardım mərkəzi"], "Колл-центр для частных клиентов": ["Call center for individuals", "Fərdi müştərilər üçün çağrı mərkəzi"], "Колл-центр для бизнеса": ["Call center for business", "Biznes üçün çağrı mərkəzi"], "Жалобы и предложения": ["Complaints and suggestions", "Şikayət və təkliflər"], "Онлайн-опрос": ["Online survey", "Onlayn sorğu"], "Прямая связь с председателем": ["Direct line to the chairman", "Sədrlə birbaşa əlaqə"], "Документы и правила": ["Documents and rules", "Sənədlər və qaydalar"], "Общий свод правил": ["General code of rules", "Ümumi qaydalar toplusu"], "Общая информация": ["General information", "Ümumi məlumat"], "Политика вознаграждения": ["Remuneration policy", "Mükafatlandırma siyasəti"], "Апелляционный совет": ["Appeals board", "Apellyasiya şurası"], "Борьба с коррупцией": ["Anti-corruption", "Korrupsiyaya qarşı mübarizə"], "Реквизиты": ["Bank details", "Rekvizitlər"], "Поиск по сайту": ["Site search", "Saytda axtarış"], "Войти в atb360": ["Sign in to atb360", "atb360-a daxil ol"], "Язык": ["Language", "Dil"], "Меню": ["Menu", "Menyu"], "Главные события банка": ["Main bank news", "Bankın əsas hadisələri"], "Семейный банкинг в atb360": ["Family banking in atb360", "atb360-da ailə bankçılığı"], "Узнать больше": ["Learn more", "Ətraflı öyrən"], "Предыдущий баннер": ["Previous banner", "Əvvəlki banner"], "Следующий баннер": ["Next banner", "Növbəti banner"], "Что вы хотите сделать": ["What would you like to do", "Nə etmək istəyirsiniz"], "Оформить карту": ["Get a card", "Kart sifariş et"], "ATB Card — бесплатная дебетовая карта. Цифровую можно получить в приложении.": ["ATB Card is a free debit card. You can get a digital one in the app.", "ATB Card — pulsuz debet kartı. Rəqəmsal kartı tətbiqdə əldə etmək olar."], "Выбрать карту": ["Choose a card", "Kart seç"], "Открыть вклад": ["Open a deposit", "Əmanət aç"], "Вклады": ["Deposits", "Əmanətlər"], "Вклад «Классический»: проценты ежемесячно или в конце срока.": ["“Classic” deposit: interest paid monthly or at the end of the term.", "“Klassik” əmanət: faizlər aylıq və ya müddətin sonunda ödənilir."], "Рассчитать вклад": ["Calculate a deposit", "Əmanəti hesabla"], "Купить жильё": ["Buy a home", "Mənzil al"], "Ипотечный кредит, в том числе льготная ипотека.": ["Mortgage loan, including preferential mortgage.", "İpoteka krediti, o cümlədən güzəştli ipoteka."], "Узнать об ипотеке": ["Learn about mortgages", "İpoteka haqqında"], "Заплатить": ["Pay", "Ödə"], "Платежи": ["Payments", "Ödənişlər"], "Оплата кредита, пополнение карты и коммунальные платежи.": ["Loan payments, card top-ups and utility payments.", "Kredit ödənişi, kartın artırılması və kommunal ödənişlər."], "Перейти к оплате": ["Go to payment", "Ödənişə keç"], "Банк в вашем телефоне": ["Bank in your phone", "Bank telefonunuzda"], "Заявку на кредит можно подать онлайн и получить предложение без ожидания.": ["Apply for a loan online and get an offer without waiting.", "Kredit müraciətini onlayn verib gözləmədən təklif ala bilərsiniz."], "Цифровая карта сразу после регистрации": ["A digital card right after registration", "Qeydiyyatdan dərhal sonra rəqəmsal kart"], "Платежи и переводы в несколько касаний": ["Payments and transfers in a few taps", "Ödənişlər və köçürmələr bir neçə toxunuşla"], "Вход по Face ID или Touch ID": ["Sign in with Face ID or Touch ID", "Face ID və ya Touch ID ilə giriş"], "Рядом и на связи": ["Nearby and in touch", "Yaxınlıqda və əlaqədə"], "Район или адрес": ["District or address", "Rayon və ya ünvan"], "Банкомат ATB": ["ATB ATM", "ATB bankomatı"], "Все отделения и банкоматы": ["All branches and ATMs", "Bütün filiallar və bankomatlar"], "Единица валюты": ["Currency unit", "Valyuta vahidi"], "Курс, AZN": ["Rate, AZN", "Məzənnə, AZN"], "1,7000": ["1.7000", "1,7000"], "1,8805": ["1.8805", "1,8805"], "0,0205": ["0.0205", "0,0205"], "Курсы и валютный калькулятор": ["Rates and currency calculator", "Məzənnələr və valyuta kalkulyatoru"], "Нужна помощь?": ["Need help?", "Kömək lazımdır?"], "Колл-центр": ["Call center", "Çağrı mərkəzi"], "Написать в WhatsApp": ["Write on WhatsApp", "WhatsApp-da yaz"], "Другие направления": ["Other directions", "Digər istiqamətlər"], "Для бизнеса": ["For business", "Biznes üçün"], "Счета, приём платежей и кредиты для МСБ и крупного бизнеса.": ["Accounts, payment acceptance and loans for SMEs and large business.", "KOB və iri biznes üçün hesablar, ödənişlərin qəbulu və kreditlər."], "Счёт онлайн": ["Online account", "Onlayn hesab"], "Перейти к разделу для бизнеса": ["Go to the business section", "Biznes bölməsinə keç"], "Персональный менеджер, премиальные карты и обслуживание без очередей.": ["Personal manager, premium cards and service without queues.", "Fərdi menecer, premium kartlar və növbəsiz xidmət."], "Сейфовые ячейки": ["Safe deposit boxes", "Seyf xanaları"], "Узнать об ATB Private": ["Learn about ATB Private", "ATB Private haqqında"], "Все новости": ["All news", "Bütün xəbərlər"], "Более новые новости": ["Newer news", "Daha yeni xəbərlər"], "Более старые новости": ["Older news", "Daha köhnə xəbərlər"], "Azer Turk Bank обновил приложение atb360: семейный банкинг и новые цифровые возможности": ["Azer Turk Bank updated the atb360 app: family banking and new digital features", "Azer Turk Bank atb360 tətbiqini yenilədi: ailə bankçılığı və yeni rəqəmsal imkanlar"], "Руководство ATB почтило память шехида Рауфа Алиева": ["ATB management honored the memory of martyr Rauf Aliyev", "ATB rəhbərliyi şəhid Rauf Əliyevin xatirəsini yad etdi"], "Чистая прибыль ATB выросла на 62%": ["ATB net profit grew by 62%", "ATB-nin xalis mənfəəti 62% artdı"], "Контакты": ["Contacts", "Əlaqə"], "Баку, ул. Дж. Мамедкулизаде, 85; 192/193": ["Baku, 85; 192/193 J. Mammadguluzadeh St.", "Bakı, C. Məmmədquluzadə küç., 85; 192/193"]};
+  var X={"© 2002 — 2026 Azər Türk Bank. Все права защищены.":["© 2002 — 2026 Azər Türk Bank. All rights reserved.","© 2002 — 2026 Azər Türk Bank. Bütün hüquqlar qorunur."],
+"ОАО «Азер-Тюрк Банк» осуществляет свою деятельность на основании лицензии № 234, выданной Центральным Банком Азербайджанской Республики от 29.06.1995 года. Копирование содержимого сайта строго запрещено":["Azer Turk Bank OJSC operates under licence No. 234 issued by the Central Bank of the Republic of Azerbaijan on 29.06.1995. Copying the content of this site is strictly prohibited.","“Azər-Türk Bank” ASC fəaliyyətini Azərbaycan Respublikasının Mərkəzi Bankı tərəfindən 29.06.1995-ci il tarixdə verilmiş 234 nömrəli lisenziya əsasında həyata keçirir. Saytın məzmununun köçürülməsi qəti qadağandır."],
+"Баку, ул. Дж. Мамедкулизаде, 85; 192/193":["Baku, J. Mammadguluzadeh St., 85; 192/193","Bakı, C. Məmmədquluzadə küç., 85; 192/193"],
+"Тарифы для бизнеса":["Business tariffs","Biznes tarifləri"],
+"Социальные сети":["Social media","Sosial şəbəkələr"],
+"Центральный банк Азербайджанской Республики":["Central Bank of the Republic of Azerbaijan","Azərbaycan Respublikasının Mərkəzi Bankı"],
+"Азербайджанский инвестиционный холдинг":["Azerbaijan Investment Holding","Azərbaycan İnvestisiya Holdinqi"]};
+  for(var k in X){D[k]=X[k];}
+  var IDX={en:0,az:1}, LABEL={en:'EN',az:'AZ',ru:'РУ'}, KEY='atb-lang';
+  var ATTRS=['aria-label','placeholder','alt','title'];
+  var nodes=[], attrs=[];
+  var w=document.createTreeWalker(document.documentElement,NodeFilter.SHOW_TEXT,{acceptNode:function(n){
+    var p=n.parentNode&&n.parentNode.nodeName; if(p==='SCRIPT'||p==='STYLE') return NodeFilter.FILTER_REJECT;
+    var t=n.nodeValue.trim(); return (t&&D[t])?NodeFilter.FILTER_ACCEPT:NodeFilter.FILTER_REJECT;}});
+  while(w.nextNode()){var n=w.currentNode, v=n.nodeValue, t=v.trim(); nodes.push({n:n,ru:t,pre:v.slice(0,v.indexOf(t)),post:v.slice(v.indexOf(t)+t.length)});}
+  [].slice.call(document.querySelectorAll('*')).forEach(function(el){
+    ATTRS.forEach(function(a){var v=el.getAttribute(a); if(v&&D[v]) attrs.push({el:el,a:a,ru:v});});
+  });
+  var wrap=document.getElementById('langwrap'), trig=wrap.querySelector('.lang'), cur=wrap.querySelector('.lang__cur'),
+      list=document.getElementById('langlist'), opts=[].slice.call(document.querySelectorAll('[data-lang]')), lang='ru';
+  function tr(ru,l){return l==='ru'?ru:D[ru][IDX[l]]}
+  function setOpen(o){wrap.classList.toggle('is-open',o);trig.setAttribute('aria-expanded',String(o));}
+  function order(){ /* текущий язык — первый: он встаёт ровно на место кнопки */
+    var items=[].slice.call(list.children);
+    items.sort(function(a,b){var la=a.firstChild.getAttribute('data-lang'),lb=b.firstChild.getAttribute('data-lang');
+      return (la===lang?-1:0)-(lb===lang?-1:0)||(['en','az','ru'].indexOf(la)-['en','az','ru'].indexOf(lb));});
+    items.forEach(function(li,i){list.appendChild(li);li.firstChild.style.setProperty('--k',i);});
+  }
+  function apply(l){
+    lang=l; document.documentElement.lang=l;
+    nodes.forEach(function(o){o.n.nodeValue=o.pre+tr(o.ru,l)+o.post});
+    attrs.forEach(function(o){o.el.setAttribute(o.a,tr(o.ru,l))});
+    cur.textContent=LABEL[l];
+    opts.forEach(function(b){b.setAttribute('aria-current',String(b.getAttribute('data-lang')===l))});
+    order();
+  }
+  function set(l){apply(l);try{localStorage.setItem(KEY,l)}catch(e){}}
+  trig.addEventListener('click',function(e){e.stopPropagation();setOpen(!wrap.classList.contains('is-open'))});
+  opts.forEach(function(b){b.addEventListener('click',function(e){e.stopPropagation();set(b.getAttribute('data-lang'));setOpen(false);if(wrap.contains(b))trig.focus()})});
+  document.addEventListener('click',function(e){if(!wrap.contains(e.target))setOpen(false)});
+  document.addEventListener('keydown',function(e){if(e.key==='Escape'&&wrap.classList.contains('is-open')){setOpen(false);trig.focus()}});
+  var start='ru', m=/[?&]lang=(en|az|ru)\b/.exec(location.search);
+  try{start=m?m[1]:(localStorage.getItem(KEY)||'ru')}catch(e){start=m?m[1]:'ru'}
+  if(!/^(en|az|ru)$/.test(start)) start='ru';
+  apply(start);
+})();
+</script>
+</body>
+</html>
